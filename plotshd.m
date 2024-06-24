@@ -38,7 +38,7 @@ switch nargin
       n    = varargin{ 4 };
       p    = varargin{ 5 };      
       [ PlotTitle, ~, freqVec, ~, ~, Pos, pressure ] = read_shd( filename, freq );
-end
+endswitch
 
 PlotTitle = replace( PlotTitle, '_', ' ' );   % remove underlines that Laurel uses in her PlotTitles
 
@@ -51,7 +51,7 @@ xlab     = 'Range (m)';
 if ( strcmp( units, 'km' ) )
    rt      = rt / 1000.0;
    xlab    = 'Range (km)';
-end
+endif
 
 if ( nargin == 1 || nargin == 2 )
    %figure
@@ -63,7 +63,7 @@ else
       hold on   % not first subplot
    end
    subplot( m, n, p )
-end
+endif
 %%
 
 % calculate caxis limits
@@ -94,7 +94,7 @@ else
    tlmax = tlmed + 0.75 * tlstd;       % max for colorbar
    tlmax = 10 * round( tlmax / 10 );   % make sure the limits are round numbers
    tlmin = tlmax - 50;                 % min for colorbar
-end
+endif
 
 % optionally remove cylindrical spreading:
 % tlt = tlt + ones( nrd, 1 ) * 10.0 * log10( rt )';
@@ -138,8 +138,8 @@ else   % line plots
       xlabel( 'TL (dB)' )
       ylabel( 'Depth (m)' );
       title( { deblank( PlotTitle ); [ 'Freq = ' num2str( freq ) ' Hz    z_{src} = ' num2str( Pos.s.z( isz ) ) ' m' ] } )
-   end
-end
+   endif
+endif
 
 %text( 0.98 * max( rt ), min( zt ), '(a)' );
 
@@ -147,7 +147,7 @@ drawnow
 
 if ( nargout == 1 )
    varargout( 1 ) = { h };   % return a handle to the figure
-end
+endif
 %%
 
 % fixed size for publications
@@ -165,13 +165,13 @@ if ( jkpsflag )
       set( gca, 'Position', [ 2    2                       14.0       7.0 ] )
       set( gcf, 'Units', 'centimeters' )
       set( gcf, 'Position', [ 3 15 19.0 11.0 ] )
-   end
+   endif
    
    %     set( gcf, 'Units', 'centimeters' )
    %     set( gcf, 'PaperPositionMode', 'manual' );
    %     set( gcf, 'PaperPosition', [ 3 3 15.0 10.0 ] )
    
-end
+endif
 
 
 % %% Depth-averaged TL

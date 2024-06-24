@@ -14,6 +14,6 @@ if ( NRr < 10 )
    fprintf( '%8.2f \n', Rr )   % print all the ranges
 else
    fprintf( '%8.2f ... %8.2f \n', Rr( 1 ), Rr( end ) ) % print first, last range
-end
+endif
 
 endfunction

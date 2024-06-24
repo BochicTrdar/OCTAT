@@ -22,13 +22,13 @@ if ( SBP == '*' )
     for I = 1 : NSBPPts
         SrcBmPat( I, : ) = fscanf(  fid, '%f %f ', 2 );
         fprintf( ' %7.2f         %6.2f \n', SrcBmPat( I, : ) )
-    end
+    endfor
     fclose( fid );
 else   % no pattern given, use omni source pattern
     SrcBmPat = zeros( 2, 2 );
     SrcBmPat( 1, : ) = [ -180.0, 0.0 ];
     SrcBmPat( 2, : ) = [  180.0, 0.0 ];
-end
+endif
 
 SrcBmPat( :, 2 ) = 10 .^ ( SrcBmPat( :, 2 ) / 20 );  % convert dB to linear scale
 

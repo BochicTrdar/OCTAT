@@ -41,8 +41,8 @@ else
    if ( ext == '.mat' )
       [ ~, FileRoot, ~ ] = fileparts( FileRoot );
       ext = '.mod.mat';
-   end
-end
+   endif
+endif
 
 modfil = [ FileRoot ext ];
 
@@ -54,7 +54,7 @@ switch ext
          Modes = read_modes_bin( modfil, freq );
       else
          Modes = read_modes_bin( modfil, freq, modes );
-      end
+      endif
    case '.mod.mat' % Matlab format
       load( modfil );
    case '.moa' % ascii format
@@ -62,12 +62,12 @@ switch ext
          Modes = read_modes_asc( modfil );
       else
          Modes = read_modes_asc( modfil, modes );
-      end
+      endif
       
    otherwise
       %errordlg( 'Unrecognized file extension', 'Warning' )
       error( 'read_modes.m: Unrecognized file extension' )
-end
+endswitch
 
 % identify the index of the frequency closest to the user-specified value
 freqdiff = abs( Modes.freqVec - freq );
@@ -87,7 +87,7 @@ if ( Modes.M ~= 0 )
       Modes.Top.rho   = 1.0;
       Modes.Top.gamma = zeros( size( Modes.k ) );
       Modes.Top.phi   = zeros( size( Modes.phi( 1, : ) ) );
-   end
+   endif
    
    if ( Modes.Bot.BC == 'A' )   % bottom
       Modes.Bot.k2    = ( 2 * pi * Modes.freqVec( freq_index ) / Modes.Bot.cp )^2;
@@ -98,7 +98,8 @@ if ( Modes.M ~= 0 )
       Modes.Bot.rho   = 1.0;
       Modes.Bot.gamma = zeros( size( Modes.k ) );
       Modes.Bot.phi   = zeros( size( Modes.phi( end, : ) ) );
-   end
-end
+   endif
+
+endif
 
 endfunction

@@ -11,19 +11,25 @@ if ( BotBTY == '*' || BotBTY == '~' )
    fprintf( '\n_______________________ \n' )
    disp( 'Using bottom-bathymetry file' )
    
-   if ( strcmp( btyfil, 'BTYFIL' ) == 0 &&  ~contains( btyfil, '.bty' )  )
+%   if ( strcmp( btyfil, 'BTYFIL' ) == 0 &&  ~contains( btyfil, '.bty' )  )
+   indexes = strfind( btyfil, '.bty');
+   itest = isempty( indexes );
+   if ( strcmp( btyfil, 'BTYFIL' ) == 0 &&  itest == 1  )
       btyfil = [ btyfil '.bty' ]; % append extension
-   end
+   endif
    
    fid = fopen( btyfil, 'r' );
    if ( fid == -1 )
       error( 'Bathymetry file does not exist' )
-   end
+   endif
    
    btyType = fgetl( fid );
    
    % Extract option letter between the quotes
    nchars = strfind( btyType, '''' );   % find quotes
+   if isempty( nchars ) == 1
+   nchars = [1,length(TitleEnv)];
+   endif
    btyType = [ btyType( nchars( 1 ) + 1 : nchars( 2 ) - 1 ) blanks( 2 - ( nchars( 2 ) - nchars( 1 ) ) ) ];
    
    switch ( btyType( 1 : 1 ) )
@@ -35,7 +41,7 @@ if ( BotBTY == '*' || BotBTY == '~' )
          fclose all;
          disp( btyType )
          error( 'Fatal error: Unknown option for bathymetry type' )
-   end
+   endswitch
    
    NbtyPts = fscanf( fid, '%i', 1 );
    fprintf( 'Number of bathymetry points = %i \n\n', NbtyPts )
@@ -46,19 +52,23 @@ if ( BotBTY == '*' || BotBTY == '~' )
    xBot = zeros( 2, NbtyPts + 2 );
    
    for ii = 1 : NbtyPts
+
       xBot( :, ii+1 ) = fscanf( fid, '%f', 2 );
+
       if ( ii == NbtyPts && ii > 11 )
          disp( '    ...' )
-      end
+      endif
       
       if ( ii < 11 || ii == NbtyPts )   % echo up to 11 values
          fprintf( '%9.5g    %9.5g \n', xBot( :, ii+1 ) );
-      end
+      endif
       
       if ( xBot( 2, ii ) > depthB )
          error( 'Bathymetry goes below last tabulated SSP value' )
-      end
-   end
+      endif
+
+   endfor
+
    fclose( fid );  % close the bathymetry file
 
    xBot( 1, : ) = 1000.0 * xBot( 1, : );   % Convert ranges in km to m
@@ -92,7 +102,7 @@ if ( BotBTY == '*' || BotBTY == '~' )
       for ii = 2 : NbtyPts - 1
          tBotNode( :, ii ) = 0.5 * ( tBot( :, ii - 1 ) + tBot( :, ii ) );
          nBotNode( :, ii ) = 0.5 * ( nBot( :, ii - 1 ) + nBot( :, ii ) );
-      end
+      endfor
       
       % end points
       tBotNode( :, 1       ) = [ 1.0, 0.0 ];   % tangent left-end  node
@@ -106,7 +116,7 @@ if ( BotBTY == '*' || BotBTY == '~' )
       kappaBot = diff( phi( 1 : end ) ) ./ RLenBot( 1 : end )'; % this is curvature = dphi/ds
    else
       kappaBot = zeros( NbtyPts + 1, 1 );
-   end
+   endif
    
 else   % no bathymetry given, use SSP depth for flat Bot
    NbtyPts = 3;
@@ -131,6 +141,6 @@ else   % no bathymetry given, use SSP depth for flat Bot
    kappaBot( 1, 1 ) = 0;
    kappaBot( 2, 1 ) = 0;
    
-end
+endif
 
 endfunction

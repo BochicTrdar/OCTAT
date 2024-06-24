@@ -30,7 +30,7 @@ if nargin == 2
     freq = varargin{ 2 };
 else
     freq = NaN;
-end
+endif
 
 % optional source (x,y) coordinate
 if nargin >= 3
@@ -39,7 +39,7 @@ if nargin >= 3
 else
    xs = NaN;
    ys = NaN;
-end
+endif
 
 PlotType = [];  % in case this was not set
 
@@ -53,7 +53,7 @@ if ( strcmp( ext, '.mat' ) )
          FileType = 'shdmat';
       case '.grn'
          FileType = 'grnmat';
-   end
+   endswitch
 else
    switch filename
       case 'ASCFIL'
@@ -67,8 +67,8 @@ else
          if ( endchar >= 4 )
             FileType = lower( filename( endchar - 2 : endchar ) );
          end
-   end
-end
+   endswitch
+endif
 
 %%
 switch FileType
@@ -80,7 +80,7 @@ switch FileType
          [ PlotTitle, PlotType, freqVec, freq0, atten, Pos, pressure ] = read_shd_bin( filename, freq );
           case 3
          [ PlotTitle, PlotType, freqVec, freq0, atten, Pos, pressure ] = read_shd_bin( filename, xs, ys );
-      end
+      endswitch
    case 'shdmat'   % Shade function mat file
       load( filename )
       
@@ -94,7 +94,7 @@ switch FileType
         % extract the appropriate source index
         pressureT = pressure( idxX, idxY, :, :, :, : );
         pressure = reshape( pressureT, [ Pos.Nsz, Pos.Nrz, Pos.Ntheta, Pos.Nrr ] );
-      end
+      endif
 
       % has a specific frequency been given?
       if ~isnan( freq )
@@ -102,7 +102,7 @@ switch FileType
          [ ~, ifreq ] = min( freqdiff );
          % extract the appropriate source index
          pressure = pressure( ifreq, 1, :, : );
-      end
+      endif
       
    case 'asc' % ascii format
       [ PlotTitle, PlotType, freqVec, freq0, atten, Pos, pressure ] = read_shd_asc( filename );
@@ -117,13 +117,13 @@ switch FileType
          [ ~, ifreq ] = min( freqdiff );
          % extract the appropriate source index
          pressure = pressure( ifreq, 1, :, : );
-      end
+      endif
       
    case 'RAM'
       [ PlotTitle, PlotType, freqVec, freq0, atten, Pos, pressure ] = read_ram_tlgrid;
    otherwise
       error( 'Unrecognized file extension' )
-end
+endswitch
 
 % clean up PlotTitle by taking only the part up inside the quotes
 % nchars = strfind( PlotTitle, '''' );   % find quotes

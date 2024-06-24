@@ -24,14 +24,14 @@ Bdry.Bot.rho   = 2.0;
 fid = fopen( envfil, 'r' );
 if ( fid == -1 )
    error( 'Unable to open environmental file', 'readenv' );
-end
+endif
 
 TitleEnv = fgetl( fid );
 % Extract letters between the quotes
 nchars   = strfind( TitleEnv, '''' );   % find quotes
 if isempty( nchars ) == 1
 nchars = [1,length(TitleEnv)];
-end
+endif
 TitleEnv = TitleEnv( nchars( 1 ) + 1 : nchars( 2 ) - 1 );
 
 disp( TitleEnv )
@@ -50,13 +50,13 @@ TopOpt   = fgetl( fid );
 nchars = strfind( TopOpt, '''' );   % find quotes
 if isempty( nchars ) == 1
 nchars = [1,length(TopOpt)];
-end
+endif
 Bdry.Top.Opt   = [ TopOpt( nchars( 1 ) + 1 : nchars( 2 ) - 1 ) blanks( 7 - ( nchars( 2 ) - nchars( 1 ) ) ) ];
 
 % convert the deprecated '*' option to '~'
 if ( Bdry.Top.Opt( 5 : 5 ) == '*' )
    Bdry.Top.Opt( 5 : 5 ) = '~';
-end
+endif
 
 SSPType(   1 : 1 ) = Bdry.Top.Opt( 1 : 1 );
 Bdry.Top.BC        = Bdry.Top.Opt( 2 : 2 );
@@ -82,7 +82,7 @@ switch ( SSPType )
    otherwise
       fclose all;
       error( 'Fatal error: Unknown option for SSP approximation' )
-end
+endswitch
 
 %     *** Attenuation options ***
 
@@ -102,7 +102,7 @@ switch ( AttenUnit( 1 : 1 ) )
    otherwise
       fclose all;
       error( 'Fatal error: Unknown attenuation units' )
-end
+endswitch
 
 %     *** optional addition of volume attenuation using standard formulas
 
@@ -125,15 +125,15 @@ if ( length( Bdry.Top.Opt ) >= 4 )
          
          fprintf(  '        T =  %4.1f degrees   S = %4.1f psu   pH = %4.1f   z_bar = %6.1f m \n', ...
             SSP.T, SSP.S, SSP.pH, SSP.z_bar );
-   end
-end
+   endswitch
+endif
 
 if ( length( Bdry.Top.Opt ) >= 5 )
    switch ( Bdry.Top.Opt(5:5) )
       case ( '*' )
          disp( '    Development options enabled' )
-   end
-end
+   endswitch
+endif
 
 [ Bdry.Top.cp, Bdry.Top.cs, Bdry.Top.rho, Bdry.Top.HS ] = topbot( fid, freq, Bdry.Top.BC, AttenUnit );
 
@@ -149,7 +149,7 @@ for medium = 1 : SSP.NMedia
       Loc( medium ) = 0;
    else
       Loc( medium ) = Loc( medium - 1 ) + SSP.Npts( medium - 1 );
-   end
+   endif
    
    % number of points in finite-difference grid
    SSP.N(     medium  ) = fscanf( fid, '%i', 1 );
@@ -172,11 +172,11 @@ for medium = 1 : SSP.NMedia
       betaItemp  = fscanf( fid, '%f', 1 );
       fgetl( fid );
       % if values read in copy over, otherwise use defaults
-      if (~isempty( alphaRtemp ) ); alphaR = alphaRtemp; end
-      if (~isempty( betaRtemp  ) ); betaR  = betaRtemp;  end
-      if (~isempty( rhoRtemp   ) ); rhoR   = rhoRtemp;   end
-      if (~isempty( alphaItemp ) ); alphaI = alphaItemp; end
-      if (~isempty( betaItemp  ) ); betaI  = betaItemp;  end
+      if (~isempty( alphaRtemp ) ); alphaR = alphaRtemp; endif
+      if (~isempty( betaRtemp  ) ); betaR  = betaRtemp;  endif
+      if (~isempty( rhoRtemp   ) ); rhoR   = rhoRtemp;   endif
+      if (~isempty( alphaItemp ) ); alphaI = alphaItemp; endif
+      if (~isempty( betaItemp  ) ); betaI  = betaItemp;  endif
       
       fprintf( '%10.2f    %10.2f    %10.2f    %10.2f    %10.4f    %10.4f \n', ztmp, alphaR, betaR, rhoR, alphaI, betaI )
       
@@ -198,8 +198,8 @@ for medium = 1 : SSP.NMedia
       if ( ztmp == SSP.depth( medium+1 ) )
          SSP.depth( 1 ) = SSP.z( 1 );
          break
-      end
-   end
+      endif
+   endfor
    
    if ( SSP.N( medium ) == 0 ) % calculate mesh automatically
       % choose a reference sound speed
@@ -210,7 +210,7 @@ for medium = 1 : SSP.NMedia
       
       SSP.N( medium ) = round( ( SSP.depth( medium + 1 ) - SSP.depth( medium ) ) / deltaz );
       SSP.N( medium ) = max( SSP.N( medium ), 10 );     % require a minimum of 10 points
-   end
+   endif
    
    fprintf( '    Number of points = %i \n', SSP.N( medium ) );
    
@@ -218,31 +218,33 @@ for medium = 1 : SSP.NMedia
    if ( ~any( cs ) )   % shear anywhere?
       if ( NFirstAcoustic == 0 )
          NFirstAcoustic = medium;
-      end
+      endif
       NLastAcoustic  = medium;
-   end
+   endif
    
    % stuff for Bellhop
    if ( medium == 1 )
       HV       = diff( SSP.z ); % layer thicknesses
       SSP.cz   = diff( SSP.c ) ./ HV; % gradient of ssp (centered-difference approximation)
-   end
+   endif
    SSP.Npts( medium ) = ii;
-   if ( medium == 1 ); SSP.depth( 1 ) = SSP.z( 1 ); end
-end
+   if ( medium == 1 ); SSP.depth( 1 ) = SSP.z( 1 ); endif
+endfor
 
 %% lower halfspace
 
 BotOpt = fgetl( fid );
 nchars = strfind( BotOpt, '''' );   % find quotes
-
+if isempty( nchars ) == 1
+nchars = [1,length(TitleEnv)];
+endif
 % Extract option letters between the quotes
 Bdry.Bot.Opt   = [ BotOpt( nchars( 1 ) + 1 : nchars( 2 ) - 1 ) blanks( 3 - ( nchars( 2 ) - nchars( 1 ) ) ) ];
 
 % convert the deprecated '*' option to '~'
 if ( Bdry.Bot.Opt( 2 : 2 ) == '*' )
    Bdry.Bot.Opt( 2 : 2 ) = '~';
-end
+endif
 
 Bdry.Bot.BC    = Bdry.Bot.Opt( 1: 1 );
 [ Bdry.Bot.cp, Bdry.Bot.cs, Bdry.Bot.rho, Bdry.Bot.HS ] = topbot( fid, freq, Bdry.Bot.BC, AttenUnit );

@@ -29,17 +29,17 @@ if ( itest == 0 )
 
    if Nx == 1
       x = x( 1 );   % handles a case where Nx was 1, but user provided more than 1 value
-   end
+   endif
    
    if Nx > 2
       if ( length( x ) > 1 )
          x = linspace( x( 1 ), x( 2 ), Nx ); % generate the vector
       else
          x = x( 1 ) * ones( 1, Nx );   % if only one value provided, replicate it
-      end
-   end
+      endif
+   endif
 else   % case where the user provided all the values individually
    x = sscanf( tline, '%f', Nx )'; % read the vector (transpose to return a row vector)
-end
+endif
 
 endfunction

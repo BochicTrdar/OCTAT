@@ -47,10 +47,10 @@ if ( isempty( fid ) )
    fid   = fopen( filename, 'r' );
    if ( fid == -1 )
       error( 'Mode file does not exist' )
-   end
+   endif
    iRecProfile = 1;   % (first time only)
    lrecl = 4 * fread( fid, 1, 'long' );   % this is converted to bytes. Fortran versions uses words instead
-end
+endif
 
 %%
 
@@ -63,7 +63,7 @@ Modes.Nmedia = fread( fid,  1, 'long'  );
 Ntot         = fread( fid,  1, 'long'  );
 NMat         = fread( fid,  1, 'long'  );
 
-if Ntot < 0, return; end
+if Ntot < 0, return; endif
 
 % N and Mater
 rec   = iRecProfile;
@@ -71,7 +71,7 @@ fseek( fid, rec * lrecl, -1 );
 for Medium = 1 : Modes.Nmedia
    Modes.N(     Medium    ) = fread( fid, 1, 'long' );
    Modes.Mater( Medium, : ) = fread( fid, 8, '*char' )';
-end
+endfor
 
 %%
 % depth and density
@@ -112,12 +112,12 @@ for ifreq = 1 : freq_index
    if ( ifreq < freq_index )
       iRecProfile = iRecProfile + 3 + Modes.M + floor( 4 * ( 2 * Modes.M - 1 ) / lrecl );   % advance to next profile
       rec = iRecProfile;
-   end
-end
+   endif
+endfor
 
 if nargin == 2
    modes = 1 : Modes.M;    % read all modes if the user didn't specify
-end
+endif
 
 % don't try to read modes that don't exist
 ii    =  modes <= Modes.M;
@@ -170,7 +170,7 @@ else
       fseek( fid, rec * lrecl, -1 );
       phi = single( fread( fid, [ 2, NMat ], 'single' )' ); % Data is read columwise
       Modes.phi( :, ii ) = phi( :, 1 ) + 1i * phi( :, 2 );
-   end
+   endfor
    
    % following is faster, but only valid if all the record sizes are the same
    % phitmp    = fread( fid, [ 2, Ntot * Modes.M ], 'float' ); % Data is read columwise
@@ -200,7 +200,7 @@ else
    k       = fread( fid, [ 2, Modes.M ], 'float' );
    Modes.k = ( k( 1, : ) + 1i * k( 2, : ) ).';   % column vector
    Modes.k = Modes.k( modes );   % take the subset that the user specified
-end
+endif
 
 iRecProfile = iRecProfile + 4 + Modes.M + floor( 4 * ( 2 * Modes.M - 1 ) / lrecl );   % advance to next profile
 

@@ -58,7 +58,7 @@ StarterType             = 'Greene';
 %%
 if ( isempty( filename ) )
     warndlg( 'No envfil has been selected', 'Warning' );
-end
+endif
 
 global omega Bdry
 global Pos
@@ -99,7 +99,7 @@ for ifreq = 1 : nfreq
     if ( nfreq > 1 )
         freq = freq_vec( ifreq );
         shdfil = [ filename int2str( ifreq ) '.shd.mat' ];   % output file name (pressure)
-    end
+    endif
     
     omega  = 2 * pi * freq;
     lambda = c0 / freq;
@@ -154,7 +154,7 @@ for ifreq = 1 : nfreq
         rProf = 1000 * rProf;   % convert km to meters
         % !!! assuming rProf( 1 ) = 0 here; should search for first profile
         c = interp1( SSP.z, cmat( :, iProf ), z ).';
-    end
+    endif
     
     %% Form marching matrix
     
@@ -180,14 +180,14 @@ for ifreq = 1 : nfreq
 
         if ( mod( ir, fix( nr / 10 ) ) == 0 )
             fprintf( '      Range = %9.5g km \n', range_march / 1000 )
-        end
+        endif
         % if range-dependent bottom or SSP, update the matrices
         if ( BotBTY == '~'|| Bdry.Top.Opt( 1 : 1 ) == 'Q' )
             
             % show progress
             if ( mod( ir, fix( nr / 50 ) ) == 0 )
                 fprintf( '      Range = %9.5g km   Depth = %9.5g m \n', range_march / 1000, d_new )
-            end
+            endif
             
             %% update the f.d. matrices if the depth changed or the SSP depends on range
             
@@ -207,7 +207,7 @@ for ifreq = 1 : nfreq
                 c = interp1( SSP.z, conj( SSP.c ), z ).';
 
                 new_matrix = 1;   % set flag to indicate we need to create a new marching matrix
-            end
+            endif
             
             %% update the f.d. matrix if the SSP changed or grid has changed
             
@@ -230,16 +230,16 @@ for ifreq = 1 : nfreq
                         
                         c     = ( 1 - alpha ) * c1 + alpha * c2;
                         new_matrix = 1;   % set flag to indicate we need to create a new marching matrix
-                    end
-                end
-            end
+                    endif
+                endif
+            endif
             
             % Form marching matrix
             if ( new_matrix )
                 [ B, L, U ] = create_ABC( k0, c0, c, nz, d, c_HS, rho_HS, nz_HS, deltar );
                 new_matrix = 0;   % flag to indicate whether the f.d. matrix needs updating
-            end
-        end
+            endif
+        endif
         
         % equivalent to C psi_new = B * psi;
         psi_new = U \ ( L \ ( B * psi ) );
@@ -264,16 +264,16 @@ for ifreq = 1 : nfreq
                 ircvr_range = ircvr_range + 1;
                 if ( ircvr_range > Nrr )
                     break
-                end   % jump out if marched past last receiver
-            end
-        end   % check next receiver range
+                endif   % jump out if marched past last receiver
+            endif
+        endwhile   % check next receiver range
 
         if ( ircvr_range > Nrr )
            break
-        end   % jump out if marched past last receiver
+        endif   % jump out if marched past last receiver
 
         psi = psi_new;
-    end   % next range step
+    endfor   % next range step
     
     toc
     
@@ -297,11 +297,9 @@ for ifreq = 1 : nfreq
     freq0        = freq;
     save( shdfil, 'PlotTitle', 'PlotType', 'freqVec', 'freq0', 'atten', 'Pos', 'pressure' )
     
-end   % of frequency loop
+endfor   % of frequency loop
 
-end
-
-%endfunction
+endfunction
 
 %%
 function [ B, L, U ] = create_ABC( k0, c0, c, nz, d, c_HS, rho_HS, nz_HS, deltar )
@@ -380,9 +378,7 @@ C = spdiags( ones( nz_tot, 1 ), -1, nz_tot, nz_tot ) + ...  % sub   diagonal
 thresh = 0.0;   % threshold for pivoting; 0 suppresses pivoting
 [ L, U ] = lu( C, thresh );   % factor C
 
-end
-
-%endfunction
+endfunction
 
 %% starter
 function psi = starter( StarterType, k0, zs, z_tot, nz_tot )
@@ -419,10 +415,10 @@ switch ( StarterType )
         % b( isd ) = 1.;
     otherwise
         error( 'Unknown option for starting field' )
-end
-end
+endswitch
 
-%endfunction
+endfunction
+
 %%
 
 function [ z, nz, z_tot ] = make_grid( Nsamples_per_wavelength, d, lambda, nz_HS )
@@ -445,6 +441,4 @@ z_tot = [ z z_HS ];
 % nz_HS
 % nz_tot
 
-end
-
-%endfunction
+endfunction

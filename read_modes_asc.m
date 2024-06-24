@@ -10,7 +10,7 @@ fid = fopen( filename, 'r' );
 
 if ( fid == -1 )
    error( 'Mode file does not exist' )
-end
+endif
 
 lrecl   = fscanf( fid, '%i' );
 Modes.pltitl = fgetl( fid );
@@ -25,7 +25,8 @@ Modes.M      = temp( 5 );
 %temp   = fscanf( fid, '%i', [ nmedia ] )
 for ii = 1 : Modes.Nmedia
    junk = fgetl( fid );
-end
+endfor
+
 junk   = fgetl( fid );   % top halfspace properties
 junk   = fgetl( fid );   % bot halfspace properties
 junk   = fgetl( fid );   % blank line
@@ -37,7 +38,7 @@ Modes.k = ckt( 1, : )' + 1i * ckt( 2, : )';
 
 if nargin == 1
    modes = 1 : m;    % read all modes if the user didn't specify
-end
+endif
 
 Modes.k = Modes.k( modes );   % take the subset that the user specified
 
@@ -54,8 +55,8 @@ for mode = 1: max( modes )
    ii = find( mode == modes );  % see if it's in the list to grab
    if ii >= 1                   % if yes, the store it
       Modes.phi( :, ii )  = phit( 1, : )' + 1i * phit( 2, : )';
-   end
-end
+   endif
+endfor
 
 %figure; imagesc( 1 : m, z, real( phi ) ); colorbar
 %figure; surf(    1 : m, z, real( phi ) ); colorbar

@@ -14,7 +14,7 @@ indexes = strfind(rayfil,'.ray');
 icheck = isempty( indexes );
 if ( strcmp( rayfil, 'RAYFIL' ) == 0 && ( icheck==1 ) )
     rayfil = [ rayfil '.ray' ]; % append extension
-end
+endif
 
 % plots a BELLHOP ray file
 
@@ -22,7 +22,7 @@ fid = fopen( rayfil, 'r' );   % open the file
 if ( fid == -1 )
     disp( rayfil );
     error( 'No ray file exists; you must run BELLHOP first (with ray ouput selected)' );
-end
+endif
 
 % read header stuff
 
@@ -60,16 +60,17 @@ if ( jkpsflag )
     set( gca, 'ActivePositionProperty', 'Position', 'Units', 'centimeters' )   
     set( gca, 'Position', [ 2 2 14.0  7.0 ] )
     %set( gcf, 'PaperPosition', [ 3 3 19.0 10.0 ] )
-end
+endif
 
 % set( gca, 'YDir', 'Reverse' )   % plot with depth-axis positive down
 
 xlabel( 'Range, x (m)' )
 ylabel( 'Range, y (m)' )
+
 if ( strcmp( units, 'km' ) )
     xlabel( 'Range, x (km)' )
     ylabel( 'Range, y (km)' )
-end
+endif
 
 zlabel( 'Depth (m)' )
 title( TITLE )
@@ -108,12 +109,12 @@ for isx = 1 : Nsx
                         x =  ray( 1, : );
                         y =  ray( 2, : );
                         z =  ray( 3, : );
-                end
+                endswitch
                 
                 if ( strcmp( units, 'km' ) )
                     x = x / 1000;   % convert to km
                     y = y / 1000;
-                end
+                endif
                 
                 %lincol = 'kbgrcmy';
                 %ii = NumBotBnc;
@@ -127,7 +128,7 @@ for isx = 1 : Nsx
                     plot3( x, y, z, 'g'  )	% hits surface only
                 else
                     plot3( x, y, z, 'r' )
-                end
+                endif
                 
                 %                 switch ibeam2
                 %                     case 1
@@ -153,18 +154,18 @@ for isx = 1 : Nsx
                 zmax = max( [ z zmax zmin + .1 ] );
                 if ( zmin == zmax ) % horizontal ray causes axis scaling problem
                     zmax = zmin + 1;
-                end
+                endif
                 
                 axis( [ xmin, xmax, ymin, ymax, zmin, zmax ] )
                 
                 if rem( ibeam, fix( Nalpha * Nbeta / 10 ) ) == 0    % flush graphics buffer every 10th ray
                     drawnow
-                end
-            end % next beam beta
-        end	% next beam alpha
+                endif
+            endfor % next beam beta
+        endfor	% next beam alpha
         
-    end   % next Sy
-end   % next Sx
+    endfor   % next Sy
+endfor   % next Sx
 
 fclose( fid );
 
@@ -174,7 +175,7 @@ zoom on
 
 if ( nargout == 1 )
     varargout{ 1 } = findobj( 'Type', 'Line' );   % return a handle to the lines in the figure
-end
+endif
 
 % fixed size for publications
 if ( jkpsflag )
@@ -186,6 +187,6 @@ if ( jkpsflag )
     %set( gcf, 'PaperPosition', [ 3 3 19.0 10.0 ] )
     set( gcf, 'Units', 'centimeters' )
     set( gcf, 'Position', [ 3 15 19.0 10.0 ] )
-end
+endif
 
 endfunction

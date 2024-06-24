@@ -65,7 +65,7 @@ layer_data                = bottom_info.data;
 if nlayers >= 20 
 disp('Max # of layers = 20!!!!!!')
 return 
-end 
+endif
 
 %*******************************************************************************
 % Get field data:
@@ -108,7 +108,7 @@ fprintf(fid,'%s\n',options1);
 
 if top_boundary_condition == 'A', 
 fprintf(fid,'%f\n',top_properties);
-end 
+endif
 
 if top_boundary_condition == 'F',
 nthetas    = surface_info.nthetas;
@@ -117,11 +117,11 @@ fidtrc = fopen(trcfil,'w');
 fprintf(fidtrc,'%d\n',nthetas);
 fprintf(fidtrc,'%f\n',angle_data);
 fclose(fidtrc);
-end 
+endif
 
 if ( top_boundary_condition == 'F' )|( top_boundary_condition == 'I' ),
 fprintf(fid,'%f %f %f\n',bumden,eta,xi);
-end 
+endif
 
 fprintf(fid,'%d %f %f\n',nmesh,csigma,zbottom);
 
@@ -138,9 +138,9 @@ if ( citype ~= 'A' )
      
          fprintf(fid,'%f %f %f %f %f %f\n',ssp_data);
      
-     end
+     endif
 
-end 
+endif
 
 for i = 1:nlayers-1 
 
@@ -161,15 +161,15 @@ for i = 1:nlayers-1
      
         fprintf(fid,'%f %f %f %f %f %f\n',datai);
      
-    end
+    endif
 
-end 
+endfor 
 
 fprintf(fid,'%s %f\n',bottom_boundary_condition,bsigma);
 if bottom_boundary_condition == 'A'
 fprintf(fid,'%f '    ,bottom_properties);
 fprintf(fid,'/ \n');
-end
+endif
 fprintf(fid,'%f %f\n',clow,chigh);
 fprintf(fid,'%f\n',rmax);
 fprintf(fid,'%d\n',nsources);
@@ -177,13 +177,13 @@ if nsources == 1
 fprintf(fid,'%f\n',zs);
 else 
 fprintf(fid,'%f %f /\n',zs(1),zs(nsources));
-end 
+endif
 fprintf(fid,'%d\n',nrd);
 if nrd == 1 
 fprintf(fid,'%f\n',rd);
 else 
 fprintf(fid,'%f %f /\n',rd(1),rd(nrd));
-end 
+endif
 
 fclose( fid );
 
@@ -202,25 +202,25 @@ if nrr == 1
 fprintf(fid,'%f /\n',rr);
 else
 fprintf(fid,'%f %f / \n',rr(1),rr(nrr));
-end 
+endif
 fprintf(fid,'%d\n',nsources);
 if nsources == 1 
 fprintf(fid,'%f /\n',zs);
 else
 fprintf(fid,'%f %f / \n',zs(1),zs(nsources));
-end
+endif
 fprintf(fid,'%d\n',nrd);
 if nrd == 1 
 fprintf(fid,'%f /\n',rd);
 else
 fprintf(fid,'%f %f / \n',rd(1),rd(nrd));
-end
+endif
 fprintf(fid,'%d\n',nrd);
 if nrd == 1 
 fprintf(fid,'%f /\n',dr);
 else
 fprintf(fid,'%f %f / \n',dr(1),dr(nrd));
-end
+endif
 fclose( fid );
 
 endfunction

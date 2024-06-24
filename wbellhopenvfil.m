@@ -34,7 +34,7 @@ sitype = surface_info.itype;
   nati = length( xati(1,:) );
   else
   nati = 0; 
-  end 
+  endif
   pati = surface_info.p    ;
   
 %*******************************************************************************
@@ -54,7 +54,7 @@ aunits = bathymetry_info.aunits;
   nbty = length( xbty(1,:) ); 
   else
   nbty = 0;
-  end
+  endif
   pbty = bathymetry_info.p     ;
 
 %*******************************************************************************  
@@ -87,15 +87,15 @@ switch option1
           fidssp = fopen(sspfil,'w');
           fprintf(fidssp,'%d\n',nr);
           fprintf(fidssp,'%f ',r);
-	  fprintf(fidssp,'\n'   );
-	  for ii = 1:nz 
-          fprintf(fidssp,'%f ',c(ii,:)); 
-          fprintf(fidssp,'\n'   );
-	  end
-	  fclose(fidssp);
+	      fprintf(fidssp,'\n'   );
+	      for ii = 1:nz 
+             fprintf(fidssp,'%f ',c(ii,:)); 
+             fprintf(fidssp,'\n'   );
+	      endfor
+	      fclose(fidssp);
        otherwise
           c1 = c;
-end
+endswitch
 
 option2 = options1(3); 
 
@@ -103,13 +103,13 @@ switch option2
        case 'A'   
           fprintf(fid,'%f ',pati);  
           fprintf(fid,' / \n');
-end
+endswitch
 
 if numel( options1 ) > 5 
 option5 = options1(6);
 else
 option5 = ' ';
-end
+endif
 
 switch option5
        case '*'   
@@ -118,7 +118,7 @@ switch option5
           fprintf(fidati,'%d\n',nati);
           fprintf(fidati,'%f %f\n',xati);
           fclose(fidati);  
-end
+endswitch
 
 fprintf(fid,'51  0.0 ' ); 
 fprintf(fid,'%f\n',Dmax );
@@ -135,7 +135,7 @@ switch option1
           fprintf(fid,'%f ',Dmax);
           fprintf(fid,'%f ',pbty);  
           fprintf(fid,'/ \n');
-end 
+endswitch
 
 option2 = options2(3);
 
@@ -146,7 +146,7 @@ switch option2
           fprintf(fidbty,'%d\n',nbty);
           fprintf(fidbty,'%f %f\n',xbty);
           fclose(fidbty);
-end
+endswitch
 
 fprintf(fid,'%d\n',nsources);
 fprintf(fid,'%f ',xs);
@@ -163,7 +163,7 @@ fprintf(fid,'%f ',array_z(n));
 fprintf(fid,' / \n');
 else
 fprintf(fid,'%f / \n',array_z(1));
-end 
+endif
 
 fprintf(fid,'%d\n',m);
 
@@ -173,7 +173,7 @@ fprintf(fid,'%f ',array_r(m));
 fprintf(fid,' / \n');
 else
 fprintf(fid,'%f / \n',array_r(1));
-end 
+endif
 
 fprintf(fid,'%s\n', options3);
 fprintf(fid,'%d\n',thetas(1));
@@ -190,7 +190,7 @@ switch ioptions4
        fprintf(fid,'\n'); 
        fprintf(fid,'%d ', beamp(4:5));
        fprintf(fid,'%s ', beamc);
-end 
+endswitch
 
 fprintf(fid,'\n');
 

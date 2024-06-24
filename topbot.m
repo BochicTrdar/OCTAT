@@ -31,7 +31,7 @@ case ( 'P' )
    disp( '    reading PRECALCULATED IRC' )
 otherwise
    error( 'Fatal error: Unknown boundary condition type' )
-end
+endswitch
 
 % ****** Read in BC parameters depending on particular choice ******
 
@@ -52,11 +52,11 @@ if ( BCType == 'A' )
    betaItemp  = fscanf( fid, '%f', 1 );
    fgetl( fid );
    % if values read in copy over, otherwise use defaults
-   if (~isempty( alphaRtemp ) ); alphaR = alphaRtemp; end
-   if (~isempty( betaRtemp  ) ); betaR  = betaRtemp;  end
-   if (~isempty( rhoRtemp   ) ); rhoR   = rhoRtemp;   end
-   if (~isempty( alphaItemp ) ); alphaI = alphaItemp; end
-   if (~isempty( betaItemp  ) ); betaI  = betaItemp;  end
+   if (~isempty( alphaRtemp ) ); alphaR = alphaRtemp; endif
+   if (~isempty( betaRtemp  ) ); betaR  = betaRtemp;  endif
+   if (~isempty( rhoRtemp   ) ); rhoR   = rhoRtemp;   endif
+   if (~isempty( alphaItemp ) ); alphaI = alphaItemp; endif
+   if (~isempty( betaItemp  ) ); betaI  = betaItemp;  endif
 
    fprintf( '%10.2f    %10.2f    %10.2f    %10.2f    %10.4f    %10.4f \n', ztmp, alphaR, betaR, rhoR, alphaI, betaI )
 
@@ -70,6 +70,6 @@ if ( BCType == 'A' )
    HS.betaR  = betaR;
    HS.betaI  = betaI;
    HS.rho    = rhoR;
-end
+endif
 
 endfunction

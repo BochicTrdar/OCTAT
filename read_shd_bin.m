@@ -21,7 +21,7 @@ filename = varargin{1};
 % optional frequency
 if nargin == 2
     freq = varargin{ 2 };
-end
+endif
 
 % optional source (x,y) coordinate
 if nargin >= 3
@@ -30,13 +30,13 @@ if nargin >= 3
 else
     xs = NaN;
     ys = NaN;
-end
+endif
 
 %%
 fid = fopen( filename, 'rb' );
 if ( fid == -1 )
     error( 'read_shd_bin.m: No shade file with that name exists' );
-end
+endif
 
 recl     = fread( fid,  1, 'int32' );     %record length in bytes will be 4*recl
 title    = fread( fid, 80, '*char' )';
@@ -78,7 +78,7 @@ else   % compressed format for TL from FIELD3D
     fseek( fid, 6 * 4 * recl, -1 ); %reposition to end of record 6
     Pos.s.y     = fread( fid, 2,    'float64' );
     Pos.s.y     = linspace( Pos.s.y( 1 ), Pos.s.y( end ), Nsy );
-end
+endif
 
 fseek( fid, 7 * 4 * recl, -1 ); %reposition to end of record 7
 Pos.s.z = fread( fid, Nsz, 'float32' );
@@ -103,7 +103,7 @@ switch PlotType
     otherwise
         pressure = zeros( Ntheta, Nsz, Nrz, Nrr );
         Nrcvrs_per_range = Nrz;
-end
+endswitch
 
 %%
 
@@ -113,7 +113,7 @@ if isnan( xs )    % Just read the first xs, ys, but all theta, sz, and rz
     if exist( 'freq', 'var' )
        freqdiff = abs( freqVec - freq );
        [ ~, ifreq ] = min( freqdiff );
-    end
+    endif
 
     for itheta = 1 : Ntheta
         %disp( [ 'Reading data for receiver at bearing ' num2str( itheta ) ' of ' num2str( Ntheta ) ] );
@@ -129,15 +129,15 @@ if isnan( xs )    % Just read the first xs, ys, but all theta, sz, and rz
                 status = fseek( fid, recnum * 4 * recl, -1 ); % Move to end of previous record
                 if ( status == -1 )
                     error( 'Seek to specified record failed in read_shd_bin' )
-                end
+                endif
                 
                 temp = fread( fid, 2 * Nrr, 'float32' );    % Read complex data
                 pressure( itheta, isz, irz, : ) = temp( 1 : 2 : 2 * Nrr ) + 1i * temp( 2 : 2 : 2 * Nrr );
                 % Transmission loss matrix indexed by  theta x sd x rd x rr
                 
-            end
-        end
-    end
+            endfor
+        endfor
+    endfor
 else              % read for a source at the desired x, y, z.
     
     xdiff = abs( Pos.s.x - xs * 1000. );
@@ -158,16 +158,16 @@ else              % read for a source at the desired x, y, z.
                 status = fseek( fid, recnum * 4 * recl, -1 ); % Move to end of previous record
                 if ( status == -1 )
                     error( 'Seek to specified record failed in read_shd_bin' )
-                end
+                endif
                 
                 temp = fread( fid, 2 * Nrr, 'float32' );    %Read complex data
                 pressure( itheta, isz, irz, : ) = temp( 1 : 2 : 2 * Nrr ) + 1i * temp( 2 : 2 : 2 * Nrr );
                 % Transmission loss matrix indexed by  theta x sd x rd x rr
                 
-            end
-        end
-    end
-end
+            endfor
+        endfor
+    endfor
+endif
 
 fclose( fid );
 

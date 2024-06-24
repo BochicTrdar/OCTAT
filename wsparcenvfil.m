@@ -34,8 +34,8 @@ if nlayers > 1
        fprintf(fid,'%f\n',layer_info(i,2,1));             
        fprintf(fid,'%f %f %f %f %f %f\n',layer_info(i,1,:));
        fprintf(fid,'%f %f %f %f %f %f\n',layer_info(i,2,:));
-   end
-end 
+   endfor
+endif 
 fprintf(fid,'%s %f\n','''R''',0);
 fprintf(fid,'%f %f\n',rx_info.clow,rx_info.chigh);
 fprintf(fid,'%f\n',rx_info.rmaxkm);
@@ -44,13 +44,13 @@ if tx_info.n == 1
 fprintf(fid,'%f / \n',tx_info.zs);
 else 
 fprintf(fid,'%f %f /\n',tx_info.zs(1),tx_info.zs(end));
-end 
+endif
 fprintf(fid,'%d\n',rx_info.nrd);
 if rx_info.nrd == 1 
 fprintf(fid,'%f /\n',rx_info.rd);
 else 
 fprintf(fid,'%f %f /\n',rx_info.rd(1),rx_info.rd(end));
-end 
+endif 
 fprintf(fid,'%s\n',pulse_info.options  ); % PULSE
 fprintf(fid,'%f %f\n',pulse_info.freqs ); % FMIN, FMAX (Hz)
 fprintf(fid,'%d\n',pulse_info.nrr      ); % NRR

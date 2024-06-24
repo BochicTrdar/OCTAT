@@ -25,6 +25,9 @@ Beam.RunType = fgetl( fid );
 % Extract option letters between the quotes
 
 nchars = strfind( Beam.RunType, '''' );   % find quotes
+if isempty( nchars ) == 1
+nchars = [1,length(TitleEnv)];
+endif
 Beam.RunType   = [ Beam.RunType( nchars( 1 ) + 1 : nchars( 2 ) - 1 ) blanks( 5 - ( nchars( 2 ) - nchars( 1 ) ) ) ];
 
 disp( '    ' )
@@ -50,7 +53,7 @@ switch ( Beam.RunType(1:1) )
     otherwise
         fclose all;
         error( 'Fatal Error: Unknown RunType selected' )
-end
+endswitch
 
 switch ( Beam.RunType(2:2) )
     case ( 'C' )
@@ -64,7 +67,7 @@ switch ( Beam.RunType(2:2) )
     otherwise
         Beam.RunType(2:2) = 'G';
         disp( 'Geometric hat beams' )
-end
+endswitch
 
 Nbeams = fscanf( fid, '%i', 1 );
 fprintf( '\nNumber of beams = %i \n', Nbeams )
@@ -73,11 +76,11 @@ Beam.Nbeams = Nbeams;
 if ( Nbeams == 0 )
     Nbeams = max( ceil( 0.3 * 1000 * Rmax * freq / c0 ), 300 );   % automatically estimate NBeams to use
     fprintf( 'Nbeams calculated automatically, Nbeams = %i \n', Nbeams )
-end
+endif
 
 if ( Bdry.Top.Opt( 6:6 ) == 'I' )
     Beam.Ibeam = fscanf( fid, '%i', 1 );
-end
+endif
 
 fgetl( fid );
 
@@ -89,14 +92,14 @@ fprintf( '\n' )
 
 if Nbeams > 2
     alpha = linspace( alpha( 1 ), alpha( 2 ), Nbeams )';
-end
+endif
 
 % check for full 360 degree sweep and remove duplicate beams at the ends
 if ( Nbeams > 1 )
    if ( abs( mod( alpha( Nbeams ) - alpha( 1 ), 360.0 ) ) < 10.0 * eps( 1.0D0 ) )
       Nbeams = Nbeams - 1;
-   end
-end
+   endif
+endif
 
 Beam.alpha = alpha;
 
@@ -117,7 +120,7 @@ fprintf( 'Maximum ray range, rBox   = %d km\n', Beam.Box.r )
 if ( Beam.deltas == 0.0 )
     Beam.deltas = ( depthB - depthT ) / 10.0;
     fprintf( 'Default step length,     deltas = %d m \n', Beam.deltas )
-end
+endif
 
 fgetl( fid );
 
@@ -137,7 +140,7 @@ switch Beam.RunType(2:2)
             disp( 'Beam shift in effect' )
         otherwise
             disp( 'No beam shift in effect' )
-    end
+    endswitch
     otherwise
     Temp = fscanf( fid, '%s', 1 );
     % Extract option letters between the quotes
@@ -159,7 +162,7 @@ switch Beam.RunType(2:2)
         otherwise
             fclose all;
             error( 'Fatal Error: Unknown curvature condition' )
-    end
+    endswitch
     
     fprintf( 'Epsilon multiplier %d \n', Beam.epmult )
     fprintf( 'Range for choosing beam width %d \n', Beam.rLoop )
@@ -173,11 +176,11 @@ switch Beam.RunType(2:2)
     fprintf( 'Number of images, Nimage = %i \n', Beam.Nimage )
     fprintf( 'Beam windowing parameter,  Ibwin = %i \n', Beam.Ibwin )
     
-end
+endswitch
 
 if ( length( Beam.RunType ) < 4 )
     Beam.RunType(4:4) = ' ';
-end
+endif
 
 switch ( Beam.RunType(4:4) )
     case ( 'R' )
@@ -187,6 +190,6 @@ switch ( Beam.RunType(4:4) )
     otherwise
         Beam.RunType(4:4) = 'R';
         disp( 'Point source (cylindrical coordinates)' )
-end
+endswitch
 
 endfunction

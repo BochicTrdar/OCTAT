@@ -34,7 +34,7 @@ switch ( AttenUnit( 1 : 1 ) )
       if( c * alpha ~= 0.0 )
          alphaT = omega / ( 2.0 * c * alpha );
       end
-end
+endswitch
 
 % added volume attenuation
 switch ( AttenUnit( 2 : 2 ) )
@@ -59,7 +59,7 @@ switch ( AttenUnit( 2 : 2 ) )
       FG     = franc_garr( freq / 1000, T, S, pH, z_bar );   % dB/km
       FG     = FG / 8685.8896; % Nepers / m
       alphaT = alphaT + FG;
-end
+endswitch
 
 %     *** Convert Nepers/m to equivalent imaginary sound speed ***
 

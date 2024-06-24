@@ -8,20 +8,26 @@ global xTop tTop nTop tTopNode nTopNode RLenTop kappaTop NatiPts atiType
 if ( TopATI == '*' || TopATI == '~' )
    fprintf( '\n_______________________ \n' )
    disp( 'Using top-altimetry file' )
-   
-   if ( strcmp( atifil, 'ATIFIL' ) == 0 &&  ~contains( atifil, '.ati' )  )
+  
+%   if ( strcmp( atifil, 'ATIFIL' ) == 0 &&  ~contains( atifil, '.ati' )  )
+   indexes = strfind( atifil, '.ati');
+   itest = isempty( indexes );
+   if ( strcmp( atifil, 'ATIFIL' ) == 0 &&  itest == 1  )
       atifil = [ atifil '.ati' ]; % append extension
-   end
+   endif
    
    fid = fopen( atifil, 'r' );
    if ( fid == -1 )
       error( 'ATIFIL does not exist' )
-   end
+   endif
    
    atiType = fgetl( fid );
    
    % Extract option letter between the quotes
    nchars = strfind( atiType, '''' );   % find quotes
+   if isempty( nchars ) == 1
+   nchars = [1,length(TitleEnv)];
+   endif
    atiType = [ atiType( nchars( 1 ) + 1 : nchars( 2 ) - 1 ) blanks( 2 - ( nchars( 2 ) - nchars( 1 ) ) ) ];
    
    switch ( atiType )
@@ -33,7 +39,7 @@ if ( TopATI == '*' || TopATI == '~' )
          fclose all;
          disp( atiType )
          error( 'Fatal error: Unknown option for altimetry type' )
-   end
+   endswitch
    
    % [ xTop, NatiPts ] = readvector( fid );
    NatiPts = fscanf( fid, '%i', 1 );
@@ -49,15 +55,18 @@ if ( TopATI == '*' || TopATI == '~' )
       
       if ( ii == NatiPts && ii > 11 )
          disp( '    ...' )
-      end
+      endif
       
       if ( ii < 11 || ii == NatiPts )   % echo up to 11 values
          fprintf( '%9.5g    %9.5g \n', xTop( :, ii+1 ) );
-      end
+      endif
+
       if ( xTop( 2, ii ) < depthT )
          error( 'Altimetry goes above first tabulated SSP value' )
-      end
-   end
+      endif
+
+   endfor
+
    fclose( fid );   % close the altimetry file
    
    xTop( 1, : ) = 1000.0 * xTop( 1, : );   % Convert ranges in km to m
@@ -91,7 +100,7 @@ if ( TopATI == '*' || TopATI == '~' )
       for ii = 2 : NatiPts - 1
          tTopNode( :, ii ) = 0.5 * ( tTop( :, ii - 1 ) + tTop( :, ii ) );
          nTopNode( :, ii ) = 0.5 * ( nTop( :, ii - 1 ) + nTop( :, ii ) );
-      end
+      endfor
       
       % end points
       tTopNode( :, 1       ) = [ 1.0, 0.0 ];   % tangent left-end  node
@@ -105,7 +114,7 @@ if ( TopATI == '*' || TopATI == '~' )
       kappaTop = diff( phi( 1 : end ) ) ./ RLenTop( 1 : end )'; % this is curvature = dphi/ds
    else
       kappaTop = zeros( NatiPts + 1, 1 );
-   end
+   endif
 else   % no bathymetry given, use SSP depth for flat top
    NatiPts = 3;
    xTop = zeros( 2, NatiPts );
@@ -129,6 +138,6 @@ else   % no bathymetry given, use SSP depth for flat top
    kappaTop( 1, 1 ) = 0;
    kappaTop( 2, 1 ) = 0;
    
-end
+endif
 
 endfunction

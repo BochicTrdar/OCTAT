@@ -20,7 +20,7 @@ tej = flipud( jet( 256 ) );  % 'jet' colormap reversed
 
 if ( ~dbflag )
    tej( 110 : 146, : ) = ones( 37, 3 );   % no color for points near zero
-end
+endif
 
 figure
 
@@ -47,7 +47,7 @@ for ifreq = 1 : Nfreq
       tlmax = 0.2 * max( tlmax, 0.000001 );
       % tlmax = maxtlt/10;
       % tlmax = 0.02/i;
-   end
+   endif
    
    pcolor( Pos.r.r, Pos.r.z, tlt )
    % imagesc( Pos.r.r, Pos.r.z, tlt )
@@ -82,7 +82,7 @@ for ifreq = 1 : Nfreq
 %       
 %       h = fill( r, z, seablue );
 %       alpha( h, .2 )
-    end
+    endif
    colorbar
    
    drawnow
@@ -98,7 +98,7 @@ for ifreq = 1 : Nfreq
    %    A = getframe( gcf );
    %    M( :, isd ) = A;
    
-end
+endfor
 
 endfunction
 % save movie M

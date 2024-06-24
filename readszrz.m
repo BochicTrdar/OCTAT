@@ -22,7 +22,7 @@ if ( Pos.Nsz < 10 )
    fprintf( '%8.2f \n', Pos.s.z )   % print all the depths
 else
    fprintf( '%8.2f ... %8.2f \n', Pos.s.z( 1 ), Pos.s.z( end ) ) % print first, last depth
-end
+endif
 
 %%
 % receiver depths
@@ -37,6 +37,6 @@ if ( Pos.Nrz < 10 )
    fprintf( '%8.2f \n', Pos.r.z )   % print all the depths
 else
    fprintf( '%8.2f ... %8.2f \n', Pos.r.z( 1 ), Pos.r.z( end ) ) % print first, last depth
-end
+endif
 
 endfunction

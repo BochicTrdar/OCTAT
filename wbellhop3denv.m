@@ -44,7 +44,7 @@ sitype = surface_info.itype;
   nati = length( xati(1,:) );
   else
   nati = 0; 
-  end 
+  endif
   pati = surface_info.p    ;
   
 %*******************************************************************************
@@ -103,7 +103,7 @@ switch option1
 	  fclose(fidssp);
        otherwise
           c1 = c;
-end
+endswitch
 
 option2 = options1(3); 
 
@@ -111,13 +111,13 @@ switch option2
        case 'A'   
           fprintf(fid,'%f ',pati);  
           fprintf(fid,' / \n');
-end
+endswitch
 
 if numel( options1 ) > 5 
 option5 = options1(6);
 else
 option5 = ' ';
-end
+endif
 
 switch option5
        case '*'   
@@ -126,7 +126,7 @@ switch option5
           fprintf(fidati,'%d\n',nati);
           fprintf(fidati,'%f %f\n',xati);
           fclose(fidati);  
-end
+endswitch
 
 fprintf(fid,'51  0.0 ' ); 
 fprintf(fid,'%f\n',Dmax );
@@ -143,7 +143,7 @@ switch option1
           fprintf(fid,'%f ',Dmax);
           fprintf(fid,'%f ',pbty);  
           fprintf(fid,'/ \n');
-end 
+endswitch
 
 option2 = options2(3);
 
@@ -155,11 +155,11 @@ switch option2
           fprintf(fidbty,'%f %f\n',xbty);
           fprintf(fidbty,'%d\n',nybty);
           fprintf(fidbty,'%f %f\n',ybty);
-	  for ii = 1:nybty
- 	  fprintf(fidbty,'%f ',zbty(ii,:)); fprintf(fidbty,'\n');
-          end	  
+	      for ii = 1:nybty
+ 	          fprintf(fidbty,'%f ',zbty(ii,:)); fprintf(fidbty,'\n');
+          endfor	  
           fclose(fidbty);
-end
+endswitch
 
 fprintf(fid,'%d\n',nx);
 fprintf(fid,'%f ' ,xs); fprintf(fid,'/\n');
@@ -176,7 +176,7 @@ if nbearings == 2
 fprintf(fid,'%f ' ,bearings(2)); fprintf(fid,'/\n');
 else
 fprintf(fid,'%f ' ,bearings(2:3)); fprintf(fid,'/\n');
-end
+endif
 fprintf(fid,'%s\n', options3);
 fprintf(fid,'%d ' ,thetas(1:2)); fprintf(fid,'\n');
 fprintf(fid,'%f ' ,thetas(3:4)); fprintf(fid,'/\n');
@@ -186,7 +186,7 @@ fprintf(fid,'%f ' ,phi(   3:4)); fprintf(fid,'/\n');
 else
 fprintf(fid,'%d ' ,phi(1)); fprintf(fid,'\n');
 fprintf(fid,'%f ' ,phi(2)); fprintf(fid,'/\n');
-end
+endif
 fprintf(fid,'%f ',box);
 fprintf(fid,'\n');
 

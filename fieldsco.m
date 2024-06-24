@@ -28,7 +28,7 @@ global cmin cmax
 if ( isempty( cmin ) )
    cmin = 1e-10;
    cmax = 1e30;
-end
+endif
 
 % if user is just supplying a file name then read all the variables
 
@@ -36,7 +36,7 @@ if ( strcmp( filename( end - 3 : end ), '.mat' ) )
    fileroot = filename( 1 : end - 8 );
 else
    fileroot = filename( 1 : end - 4 );
-end
+endif
 
 % disp( [ 'fieldsco ' filename ] )
 
@@ -45,15 +45,18 @@ if ( nargin == 1 )
    fid = fopen( [ fileroot '.flp' ], 'r' );
    if ( fid < 3 )
       error( 'flp file missing' )
-   end
+   endif
    
    Opt = fgetl( fid );   % x or r coordinate; positive/negative/both sides of spectrum
    % Extract letters between the quotes
    nchars = strfind( Opt, '''' );   % find quotes
+   if isempty( nchars ) == 1
+   nchars = [1,length(TitleEnv)];
+   endif
    Opt    = Opt( nchars( 1 ) + 1 : nchars( 2 ) - 1 );
    if ( length( Opt ) <= 3 )
       Opt( 4 : 4 ) = 'O';   % default beampattern is omni
-   end
+   endif
 
    disp( 'Option line:' )
    disp( Opt )
@@ -70,7 +73,7 @@ if ( nargin == 1 )
    
    % read in the Green's function; just getting basic info at this stage
    [ ~, ~, freqVec, freq0, ~, Pos, ~ ] = read_shd( filename );
-end
+endif
 
 % optionally read in a source beam pattern
 SBP = Opt( 4 : 4 );
@@ -100,7 +103,7 @@ for ifreq = 1 : Nfreq
    itest = isempty( indexes );
    if ( itest == 0 )
       k    = 2 * pi * freq0 ./ cVec;
-   end
+   endif
    
    Nk   = length( k );              % # of wavenumbers
    
@@ -108,14 +111,14 @@ for ifreq = 1 : Nfreq
 
    if ( Rr( end ) * deltak > 10 )
       error( 'The wavenumber sampling is too coarse to accurately calculate the field at the largest range' )
-   end
+   endif
    
    %if ( contains( PlotTitle( 1 : 7 ), 'SCOOTER' ) )
    indexes = strfind( PlotTitle(1:7), 'SCOOTER');
    itest = isempty( indexes );
    if ( itest == 0 )
       atten  = deltak;   % this is calculated here because SCOOTER doesn't write it for each frequency
-   end
+   endif
    
    ck = k + 1i * atten;
    x  = ck.' * abs( Rr' );   % this is a matrix of size nk * nrr
@@ -147,14 +150,14 @@ for ifreq = 1 : Nfreq
          factor2 = deltak / 2;
       otherwise
          disp( 'fieldsco.m -- Unknown first letter option in second line of .flp file' )
-   end
+   endswitch
    
    for isz = 1 : Nsz
       G = squeeze( Gtemp( isz, 1, :, : ) );
 
       if size( G, 2 ) == 1 % if G is a vector, expand it into a matrix with one row
          G = reshape( G, 1, length( G ) );
-      end
+      endif
       
       % apply the source beam pattern
       if ( SBP == '*' )
@@ -165,7 +168,7 @@ for ifreq = 1 : Nfreq
          theta = atand( sqrt( kz2 ) ./ k );   % calculate the angle in degrees
          S = interp1( SrcBmPat( :, 1 ), SrcBmPat( : , 2 ), theta );
          G = scalecol( G, S );         % apply the shading
-      end
+      endif
       
       G = taper( G, k, Nk, kleft, kright );
       G( abs( G ) < 1e-40 ) = 0;   % avoid underflows--- they slow the following down a huge amount
@@ -183,7 +186,7 @@ for ifreq = 1 : Nfreq
             %Y = -G * cos(( x - pi / 4 ) );
          otherwise
             disp( 'fieldsco.m -- Unknown second letter option in second line of .flp file' )
-      end
+      endswitch
       
       pressure( ifreq, isz, :, : ) = scalecol( Y, factor2 );  % cylindrical spreading, etc.
      
@@ -191,8 +194,8 @@ for ifreq = 1 : Nfreq
 %       figure; imagesc( rr, Pos.r.z, abs( squeeze( pressure( ifreq, 1, :, : ) ) ) )
 %       title( num2str( freqVec( ifreq ) ) )
       fprintf( '      Transform completed for source depth %f, frequency (or time) %f \n', Pos.s.z( isz ), freq );
-   end   % next source depth
-end   % next frequency
+   endfor   % next source depth
+endfor   % next frequency
 
 Pos.r.r  = Rr;
 atten    = 0;
@@ -215,7 +218,7 @@ if ( kleft > k( 1 )  )
 else
    Nwinleft = 0;
    winleft  = [];
-end
+endif
 
 if ( kright < k( end )  )
    Nwinright = 2 * round( ( k(end) - kright ) / ( k(end) - k( 1 ) ) * Nk ) + 1; % odd number covering 10% of the spectrum
@@ -225,11 +228,11 @@ if ( kright < k( end )  )
 else
    Nwinright = 0;
    winright  = [];
-end
+endif
 
 if ( Nk < Nwinleft + Nwinright )
    error( [ mfilename, 'phase speed limits for windowing are invalid' ] );
-end
+endif
 
 window  = [ winleft ones( 1, Nk - Nwinleft - Nwinright ) winright ];
 

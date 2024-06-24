@@ -32,7 +32,7 @@ else   % dummy values for BELLHOP
     cInt.Low  = 1500;
     cInt.High = 1e9;
     RMax      = 100;
-end
+endif
 
 % BELLHOP3D has x-y coordinates of sources as well
 if ( strcmp( model, 'BELLHOP3D' ) )
@@ -41,7 +41,7 @@ if ( strcmp( model, 'BELLHOP3D' ) )
     Pos.s.y = sy;
     Pos.Nsx = Nsx;
     Pos.Nsy = Nsy;
-end
+endif
 
 % !!! check: does this delete Pos.s.x, etc. when executed
 Pos = readszrz( fid );                           % read in the source and receiver depths
@@ -65,6 +65,6 @@ else   % dummy value for models that don't use Beam parameters
     Beam.Box.r      = 1.05 * RMax;
     Beam.deltas     = 0;
     Pos.r.r     = linspace( 0, RMax, 501 );   % set up receiver range vector
-end
+endif
 
 endfunction

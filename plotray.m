@@ -16,7 +16,7 @@ indexes = strfind(rayfil,'.ray');
 icheck = isempty( indexes );
 if ( strcmp( rayfil, 'RAYFIL' ) == 0 && ( icheck==1 ) )
    rayfil = [ rayfil '.ray' ]; % append extension
-end
+endif
 
 % plots a BELLHOP ray file
 
@@ -24,7 +24,7 @@ fid = fopen( rayfil, 'r' );   % open the file
 if ( fid == -1 )
    disp( rayfil );
    error( 'No ray file exists; you must run BELLHOP first (with ray ouput selected)' );
-end
+endif
 
 % read header stuff
 
@@ -63,7 +63,7 @@ if ( jkpsflag )
    set( gca, 'ActivePositionProperty', 'Position', 'Units', 'centimeters' )
    set( gca, 'Position', [ 2 2 14.0  7.0 ] )
    %set( gcf, 'PaperPosition', [ 3 3 19.0 10.0 ] )
-end
+endif
 
 set( gca, 'YDir', 'Reverse' )   % plot with depth-axis positive down
 
@@ -91,7 +91,8 @@ for isz = 1 : Nsz
       NumTopBnc = fscanf( fid, '%i', 1 );
       NumBotBnc = fscanf( fid, '%i', 1 );
 
-      if isempty( nsteps ); break; end
+      if isempty( nsteps ); break; endif
+
       switch Type
          case 'rz'
             ray = fscanf( fid, '%f', [2 nsteps] );
@@ -105,11 +106,11 @@ for isz = 1 : Nsz
             ys = ray( 2, 1 );
             r = sqrt( ( ray( 1, : ) - xs ).^2 + ( ray( 2, : ) - ys ).^2 );
             z = ray( 3, : );
-      end
+      endswitch
       
       if ( strcmp( units, 'km' ) )
          r = r / 1000;   % convert to km
-      end
+      endif
       
       %lincol = 'kbgrcmy';
       %ii = NumBotBnc;
@@ -123,7 +124,7 @@ for isz = 1 : Nsz
          plot( r, z, 'g' )	   % hits surface only
       else
          plot( r, z, 'r' )    % direct path
-      end
+      endif
       
       % update axis limits
       rmin = min( [ r rmin ] );
@@ -131,9 +132,11 @@ for isz = 1 : Nsz
 
       zmin = min( [ z zmin ] );
       zmax = max( [ z zmax ] );
+
       if ( zmin == zmax ) % horizontal ray causes axis scaling problem
          zmax = zmin + 1;
-      end
+      endif
+
       axis( [ rmin, rmax, zmin, zmax ] )
       
       % flush graphics buffer every 10th ray
@@ -141,10 +144,10 @@ for isz = 1 : Nsz
       % traced, not number of eigenrays)
       if rem( ibeam, fix( Nalpha / 10 ) ) == 0
          drawnow
-      end
+      endif
 
-   end	% next beam
-end % next source depth
+   endfor	% next beam
+endfor % next source depth
 
 fclose( fid );
 
@@ -154,7 +157,7 @@ zoom on
 
 if ( nargout == 1 )
    varargout{ 1 } = findobj( 'Type', 'Line' );   % return a handle to the lines in the figure
-end
+endif
 
 % fixed size for publications
 if ( jkpsflag )
@@ -166,6 +169,6 @@ if ( jkpsflag )
    %set( gcf, 'PaperPosition', [ 3 3 19.0 10.0 ] )
    set( gcf, 'Units', 'centimeters' )
    set( gcf, 'Position', [ 3 15 19.0 10.0 ] )
-end
+endif
 
 endfunction
